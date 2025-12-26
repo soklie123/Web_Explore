@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@import "primereact/resources/themes/lara-light-indigo/theme.css";
+@import "primereact/resources/primereact.min.css";
+@import "primeicons/primeicons.css";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,8 +18,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #0a0a0a;
   }
 }
 

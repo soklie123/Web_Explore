@@ -1,0 +1,65 @@
+import React from 'react';
+import { Globe, TrendingUp, Heart, Activity } from 'lucide-react';
+import { StatCard } from './StatCard';
+
+interface DiscoveryJourneyProps {
+  totalCountries?: number;
+  countriesVisited?: number;
+  visitedThisMonth?: number;
+  favoritesSaved?: number;
+  recentActivities?: number;
+  activitiesToday?: number;
+}
+
+export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
+  totalCountries = 195,
+  countriesVisited = 12,
+  visitedThisMonth = 3,
+  favoritesSaved = 2,
+  recentActivities = 28,
+  activitiesToday = 5,
+}) => {
+  return (
+    <div className="w-full max-w-7xl mx-auto p-6">
+      <h1 className="text-2xl font-regular text-gray-800 mb-6">
+        Your Discovery Journey
+      </h1>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Total Countries"
+          value={totalCountries}
+          icon={<Globe className="w-6 h-6" />}
+          iconBgColor="bg-blue-100"
+          iconColor="text-blue-600"
+        />
+        
+        <StatCard
+          title="Countries Visited"
+          value={countriesVisited}
+          subtitle={`+${visitedThisMonth} this month`}
+          icon={<TrendingUp className="w-6 h-6" />}
+          iconBgColor="bg-blue-100"
+          iconColor="text-blue-600"
+        />
+        
+        <StatCard
+          title="Favorites Saved"
+          value={favoritesSaved}
+          icon={<Heart className="w-6 h-6" />}
+          iconBgColor="bg-blue-100"
+          iconColor="text-blue-600"
+        />
+        
+        <StatCard
+          title="Recent Activities"
+          value={recentActivities}
+          subtitle={`+${activitiesToday} today`}
+          icon={<Activity className="w-6 h-6" />}
+          iconBgColor="bg-blue-100"
+          iconColor="text-blue-600"
+        />
+      </div>
+    </div>
+  );
+};
