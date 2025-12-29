@@ -1,8 +1,9 @@
-@import "tailwindcss";
-
 @import "primereact/resources/themes/lara-light-indigo/theme.css";
 @import "primereact/resources/primereact.min.css";
 @import "primeicons/primeicons.css";
+@import "flag-icons/css/flag-icons.min.css";
+
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;

@@ -1,9 +1,14 @@
-'use client'
+import React from 'react'
+import ProfileView from './info/ProfileView'
+import RecentActi from './info/RecentActi'
 
-export default function Profile(){
-    return(
-        <main>
-            <h1>User Profile</h1>
-        </main>
-    )
+const page = () => {
+  return (
+    <div>
+      <ProfileView/>
+      <RecentActi/>
+    </div>
+  )
 }
+
+export default page

@@ -1,5 +1,7 @@
 'use client'
-import CountryCard from './CountryCard'
+
+import CountryCard from "../../countries/components/CountryCard";
+import SectionHeader from "../../countries/function/SectionHeader";
 
 const countries = [
   {
@@ -51,22 +53,31 @@ const countries = [
     name: "Australia",
     image: "/images/austalia.png",
     region: "Ocean",
-    city: "Brasília",
+    city: "Canberra",
     population: "213M",
     description: "A land of unique wildlife, stunning beaches, and the iconic Sydney Opera House. Adventure awaits down under.",
     flag: "au",
+  },
+  {
+    name: "Egypt",
+    image: "/images/egypt.png",
+    region: "Africa",
+    city: "Cairo",
+    population: "213M",
+    description: "A land of unique wildlife, stunning beaches, and the iconic Sydney Opera House. Adventure awaits down under.",
+    flag: "eg",
   },
 ];
 
 export default function CountryList() {
   return (
     <div className="pt-4 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-regular text-gray-800 mb-4">
-        Feature Countries
-      </h1>
-      <p className="pb-4 text-1xl font-small text-gray-600">
-        Discover our handpicked selection of must-visit destinations
-      </p>
+
+      <SectionHeader 
+        title="List All Country"
+        description="Discover our handpicked selection of must-visit destination"
+      />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4">
         {countries.map((country, index) => (
           <CountryCard 
