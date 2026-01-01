@@ -58,13 +58,13 @@ export default function Home() {
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+          <div className="flex flex-col sm:flex-row items-center gap-4 justify-center mb-16">
             <ExploreButton />
 
             <button
               onClick={scrollToPopular}
               className="
-                flex items-center gap-2
+                flex justify-center gap-2
                 bg-white hover:bg-gray-50
                 px-8 py-3 rounded-full
                 border border-gray-200

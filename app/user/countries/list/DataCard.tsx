@@ -3,6 +3,7 @@ import { Country } from "./CountryList";
 export const countries: Country[] = [
   {
     name: "France",
+    slug: "france",
     image: "/images/france.png",
     region: "Europe",
     city: "Paris",
@@ -12,6 +13,7 @@ export const countries: Country[] = [
   },
   {
     name: "Japan",
+    slug: "japan",
     image: "/images/japan.png",
     region: "Asia",
     city: "Tokyo",
@@ -21,6 +23,7 @@ export const countries: Country[] = [
   },
   {
     name: "United State",
+    slug: "usa",
     image: "/images/usa.png",
     region: "South America",
     city: "Washington D.C.",
@@ -29,7 +32,8 @@ export const countries: Country[] = [
     flag: "us",
   },
   {
-    name: "Brazil",
+    name: "Italy",
+    slug: "italy",
     image: "/images/italy.png",
     region: "South America",
     city: "Brasília",
@@ -39,6 +43,7 @@ export const countries: Country[] = [
   },
   {
     name: "Brazil",
+    slug: "brazil",
     image: "/images/brazil.png",
     region: "South America",
     city: "Brasília",
@@ -48,6 +53,7 @@ export const countries: Country[] = [
   },
   {
     name: "Australia",
+    slug: "australia",
     image: "/images/austalia.png",
     region: "Ocean",
     city: "Canberra",

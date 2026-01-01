@@ -11,7 +11,8 @@ export default function ProfilePage() {
     email: "novraksa204@gmail.com",
     bio: "Passionate traveler exploring the world one country at a time.",
     location: "Phnom Penh, Cambodia",
-    joinedDate: "January 2024"
+    joinedDate: "January 2024",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Nov"
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -19,6 +20,14 @@ export default function ProfilePage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setProfile(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setProfile(prev => ({ ...prev, avatar: url }));
+    }
   };
 
   const handleSave = () => {
@@ -52,15 +61,24 @@ export default function ProfilePage() {
                 <div className="relative group">
                   <div className="w-32 h-32 rounded-full border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-blue-100 to-emerald-100">
                     <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nov"
+                      src={profile.avatar}
                       alt="avatar"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   {isEditing && (
-                    <button className="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition">
-                      <Camera className="w-4 h-4" />
-                    </button>
+                    <>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id="avatarUpload"
+                        className="hidden"
+                        onChange={handleAvatarChange}
+                      />
+                      <label htmlFor="avatarUpload" className="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 cursor-pointer transition">
+                        <Camera className="w-4 h-4" />
+                      </label>
+                    </>
                   )}
                 </div>
 
@@ -87,7 +105,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 justify-center md:justify-center sm:justify-center">
+              <div className="flex gap-3 justify-center">
                 {!isEditing ? (
                   <>
                     <button
@@ -128,87 +146,32 @@ export default function ProfilePage() {
             {isEditing ? (
               <div className="space-y-6 mt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={profile.firstName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={profile.lastName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      name="username"
-                      value={profile.username}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender
-                    </label>
-                    <select
-                      name="gender"
-                      value={profile.gender}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    >
-                      <option>Male</option>
-                      <option>Female</option>
-                      <option>Other</option>
-                      <option>Prefer not to say</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={profile.email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Location
-                    </label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={profile.location}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
-                  </div>
+                  {["firstName","lastName","username","gender","email","location"].map((field) => (
+                    <div key={field}>
+                      <label className="block text-sm font-medium text-gray-700 mb-2 capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
+                      {field === "gender" ? (
+                        <select
+                          name={field}
+                          value={profile[field as keyof typeof profile]}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        >
+                          <option>Male</option>
+                          <option>Female</option>
+                          <option>Other</option>
+                          <option>Prefer not to say</option>
+                        </select>
+                      ) : (
+                        <input
+                          type={field === "email" ? "email" : "text"}
+                          name={field}
+                          value={profile[field as keyof typeof profile]}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        />
+                      )}
+                    </div>
+                  ))}
                 </div>
 
                 <div>
@@ -238,25 +201,12 @@ export default function ProfilePage() {
 
                 {/* Profile Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <span className="text-sm text-gray-500 font-medium">First Name</span>
-                    <p className="text-gray-800 font-semibold mt-1">{profile.firstName}</p>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <span className="text-sm text-gray-500 font-medium">Last Name</span>
-                    <p className="text-gray-800 font-semibold mt-1">{profile.lastName}</p>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <span className="text-sm text-gray-500 font-medium">Username</span>
-                    <p className="text-gray-800 font-semibold mt-1">@{profile.username}</p>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <span className="text-sm text-gray-500 font-medium">Gender</span>
-                    <p className="text-gray-800 font-semibold mt-1">{profile.gender}</p>
-                  </div>
+                  {["firstName","lastName","username","gender"].map((field) => (
+                    <div key={field} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                      <span className="text-sm text-gray-500 font-medium capitalize">{field.replace(/([A-Z])/g, ' $1')}</span>
+                      <p className="text-gray-800 font-semibold mt-1">{profile[field as keyof typeof profile]}</p>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Stats */}

@@ -1,7 +1,9 @@
 'use client'
 
+import CountryList from "../countries/list/CountryList";
+import { countries } from "../countries/list/DataCard";
 import ExploreFilter from "./cards/ExploreFilter";
-import ExploreList from "./cards/ExploreList";
+
 
 const handleApply = () => {
     console.log("Filter applied!");
@@ -13,7 +15,11 @@ export default function Explore(){
         <main>
             <ExploreFilter onApply={handleApply} />
             
-            <ExploreList/>
+            <CountryList 
+                title="List All Countries"
+                description="Discover our handpicked selection of must-visit destinations"
+                countries={countries}
+                />
         </main>
     );
 }

@@ -5,6 +5,7 @@ import SectionHeader from '../function/SectionHeader'
 
 export type Country = {
   name: string
+  slug: string
   image: string
   region: string
   city: string
@@ -31,8 +32,8 @@ export default function PopularCountryList({
       <SectionHeader title={title} description={description} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {countries.map((country, index) => (
-          <CountryCard key={index} {...country} />
+        {countries.map((country) => (
+          <CountryCard key={country.slug} {...country} />
         ))}
       </div>
     </section>

@@ -29,7 +29,7 @@ const page = () => {
         />
 
         <PopularCountryList
-          id="popular"
+          
           title="Popular Destinations"
           description="Trending countries loved by our community"
           countries={countries}
