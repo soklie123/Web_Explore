@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import FavoriteButton from "../function/FavoriteButton"
 
+
 type CountryCardProps = {
   name: string
   image: string

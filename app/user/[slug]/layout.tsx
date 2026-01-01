@@ -8,6 +8,7 @@ import CountryNavigation from './components/CountryNavigation'
 import FavoriteButton from '../countries/function/FavoriteButton'
 import { countries } from '../countries/list/DataCard'
 
+
 type Props = {
   children: React.ReactNode
   params: Promise<{ slug: string }> // Change this to Promise
