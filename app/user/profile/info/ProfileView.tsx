@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { User, LogOut, Edit2, Mail, Calendar, MapPin, Camera } from 'lucide-react'
+import { User, LogOut, Edit2, Mail, Calendar, MapPin } from 'lucide-react'
 import { onAuthStateChanged, updateProfile, signOut, User as FirebaseUser } from 'firebase/auth'
-import { auth, storage, db } from '@/app/auth/lib/firebase'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { auth, db } from '@/app/auth/lib/firebase'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 interface Profile {
@@ -33,7 +32,6 @@ export default function ProfilePage() {
   })
 
   const [isEditing, setIsEditing] = useState(false)
-  const [uploading, setUploading] = useState(false)
   const [showLogoutModal, setShowLogoutModal] = useState(false)
 
   // ================= FETCH USER INFO =================
@@ -114,25 +112,6 @@ export default function ProfilePage() {
     setProfile((prev) => ({ ...prev, [name]: value }))
   }
 
-  // ================= HANDLE AVATAR UPLOAD =================
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !auth.currentUser) return
-
-    setUploading(true)
-    try {
-      const avatarRef = ref(storage, `avatars/${auth.currentUser.uid}/${file.name}`)
-      await uploadBytes(avatarRef, file)
-      const downloadURL = await getDownloadURL(avatarRef)
-      setProfile((prev) => ({ ...prev, avatar: downloadURL }))
-    } catch (err) {
-      console.error(err)
-      alert('Failed to upload avatar')
-    } finally {
-      setUploading(false)
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -147,27 +126,14 @@ export default function ProfilePage() {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6">
                 {/* Avatar */}
-                <div className="relative group">
+                <div className="relative">
                   <div className="w-32 h-32 rounded-full border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-blue-100 to-emerald-100">
-                    <img src={profile.avatar || undefined} alt="avatar" className="w-full h-full object-cover" />
+                    <img
+                      src={profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=default`}
+                      alt="avatar"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  {isEditing && (
-                    <>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        id="avatarUpload"
-                        className="hidden"
-                        onChange={handleAvatarChange}
-                      />
-                      <label
-                        htmlFor="avatarUpload"
-                        className={`absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 cursor-pointer transition ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <Camera className="w-4 h-4" />
-                      </label>
-                    </>
-                  )}
                 </div>
 
                 {/* Name & Info */}

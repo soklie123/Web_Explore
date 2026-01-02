@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import * as authService from "../lib/auth.service";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 export const useAuth = () => {
   const router = useRouter();
@@ -16,18 +18,36 @@ export const useAuth = () => {
 
     try {
       const result = await authService.loginWithEmail(email, password);
-      const token = await result.user.getIdToken();
+      const user = result.user;
+
+      // Get ID token
+      const token = await user.getIdToken();
       localStorage.setItem("authToken", token);
-      router.push("/user");
-      return { success: true };
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Login failed";
-      setError(message);
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      // Fetch role from Firestore
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      const role = docSnap.exists() && docSnap.data()?.role 
+      ? (docSnap.data()?.role as string).trim().toLowerCase()  // Normalize to lowercase
+      : "user";
+
+      // Redirect based on role
+      if (role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/user");
+      }
+        
+      return { success: true, role };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Login failed";
+    setError(message);
+    return { success: false, error: message };
+  } finally {
+    setLoading(false);
+  }
+};
 
   // ================= SIGNUP =================
   const signup = async (
@@ -46,10 +66,15 @@ export const useAuth = () => {
         firstName,
         lastName
       );
-      const token = await result.user.getIdToken();
+      const user = result.user;
+
+      const token = await user.getIdToken();
       localStorage.setItem("authToken", token);
+
+      // Set default role in Firestore
+      await authService.setUserRole(user.uid, "user");
       router.push("/user");
-      return { success: true };
+      return { success: true, role: "user" };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Signup failed";
       setError(message);
@@ -66,13 +91,23 @@ export const useAuth = () => {
 
     try {
       const result = await authService.loginWithGoogle();
-      const token = await result.user.getIdToken();
+      const user = result.user;
+
+      const token = await user.getIdToken();
       localStorage.setItem("authToken", token);
-      router.push("/dashboard");
-      return { success: true };
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      const role = docSnap.exists() && docSnap.data()?.role 
+      ? (docSnap.data()?.role as string).trim() 
+      : "user";
+
+      if (role === "admin") router.push("/admin");
+      else router.push("/user");
+
+      return { success: true, role };
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Google login failed";
+      const message = err instanceof Error ? err.message : "Google login failed";
       setError(message);
       return { success: false, error: message };
     } finally {
