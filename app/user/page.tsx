@@ -6,7 +6,7 @@ import { DiscoveryJourney } from './countries/components/DiscoverJourney'
 import { countries } from './countries/list/DataCard'
 import PopularCountryList from './countries/list/PopularCountryList'
 
-const page = () => {
+const Home = () => {
   return (
     <>
         <MainPage/>
@@ -41,4 +41,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Home

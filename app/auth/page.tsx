@@ -1,7 +1,11 @@
-export default function AuthPage(){
-    return(
-        <div>
-            Authentication
-        </div>
-    )
+import LoginPage from './components/LoginPage'
+
+const Login = () => {
+  return (
+    <div>
+      <LoginPage/>
+    </div>
+  )
 }
+
+export default Login

@@ -1,11 +1,12 @@
 "use client"
 
-import { Globe, Sun, Moon, Bell } from "lucide-react"
+import { Globe, Sun, Moon } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function Navbar() {
+  const router = useRouter();
   const [darkMode, setDarkMode] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
@@ -101,17 +102,20 @@ export default function Navbar() {
               <Moon className="w-5 h-5 text-gray-500 transition-transform duration-300" />
             )}
           </button>   
-          <button className="
+          <button
+                onClick={() => router.push("/auth")}
+                type="button"
+                className="
                   flex items-center justify-center
-                  px-5 py-2 rounded-full
-                  text-sm font-semibold
-                  text-white
+                  px-6 py-3
+                  rounded-full
+                  text-sm font-semibold text-white
                   bg-gradient-to-r from-blue-600 to-teal-500
-                   hover:from-teal-500 hover:to-blue-600
-                  transition-all duration-300 ease-in-out
+                  hover:from-teal-500 hover:to-blue-600
+                  transition-transform duration-300 ease-in-out
                   shadow-md hover:shadow-lg
-                  active:scale-10 
-                  "
+                  active:scale-95
+                "
           >
             Sign In
           </button>       
