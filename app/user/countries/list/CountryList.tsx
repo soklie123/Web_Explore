@@ -5,6 +5,7 @@ import CountryCard from '../components/CountryCard'
 import SectionHeader from '../function/SectionHeader'
 
 export type Country = {
+ 
   name: string
   slug: string
   image: string
@@ -16,6 +17,7 @@ export type Country = {
 }
 
 type CountryListProps = {
+  id?: string
   title: string
   description: string
   countries: Country[]
@@ -23,6 +25,7 @@ type CountryListProps = {
 }
 
 export default function CountryList({
+  id,
   title,
   description,
   countries = [],
@@ -42,7 +45,9 @@ export default function CountryList({
   }
 
   return (
-    <div className="pt-4 max-w-7xl mx-auto">
+    <div 
+        id={id} 
+        className="pt-4 max-w-7xl mx-auto">
       {/* Header with optional arrows */}
       <div className="flex justify-between items-center mt-2">
         <SectionHeader title={title} description={description} />

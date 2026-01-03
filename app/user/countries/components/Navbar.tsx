@@ -10,7 +10,6 @@ export default function Navbar() {
   const [darkMode, setDarkMode] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  
 
   const navItems = [
     { name: "Home", path: "/user" },
@@ -34,13 +33,15 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/user" className="flex items-center gap-2 flex-shrink-0">
           <Globe className="w-8 h-8 text-sky-600" />
-          <span className="hidden sm:block font-semibold text-lg bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent whitespace-nowrap transition-all duration-300">
+          <span className="hidden sm:block font-semibold text-lg bg-gradient-to-r 
+                      from-blue-600 to-emerald-500 bg-clip-text text-transparent 
+                      whitespace-nowrap transition-all duration-300">
             ExploreVista
           </span>
         </Link>
 
         {/* Center Nav */}
-        <div className="flex items-center flex-1 justify-center">
+        <div className="flex items-center flex-1 justify-center sm:pl-12">
           {/* Desktop Nav */}
           <nav className="hidden sm:flex gap-8">
             {navItems.map((item) => {

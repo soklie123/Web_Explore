@@ -29,15 +29,32 @@ export default function CountryCard({
   const router = useRouter()
 
   const handleClick = () => {
+  // Read current recently viewed from localStorage
+  const viewed: string[] = JSON.parse(localStorage.getItem("recentlyViewed") || "[]")
+
+    // Add this country to the front, remove duplicates
+  const updated = [slug!, ...viewed.filter(s => s !== slug!)].slice(0, 10) // Keep last 10
+
+  localStorage.setItem("recentlyViewed", JSON.stringify(updated))
+
     router.push(`/user/${slug}/overview`)
   }
 
   return (
     <section>
-      <div className="card w-full h-auto flex flex-col rounded-2xl overflow-hidden bg-white
-                      shadow-lg transition-transform transition-shadow duration-300 ease-in-out
-                      hover:-translate-y-2 hover:scale-105 hover:shadow-2xl cursor-pointer"
-           onClick={handleClick}>
+      <div
+        onClick={handleClick}
+        className="
+          card w-full h-[420px] flex flex-col rounded-2xl overflow-hidden bg-white
+          shadow-md 
+          cursor-pointer
+          transition-all duration-300 ease-out
+          hover:-translate-y-2 hover:scale-[1.03]
+          hover:shadow-2xl
+          hover:ring-1 hover:ring-blue-200
+          active:scale-[0.98]
+        "
+      >
         {/* Image Section */}
         <div className="relative h-48 flex-shrink-0">
           <Image src={image} alt={name} fill className="object-cover" priority />

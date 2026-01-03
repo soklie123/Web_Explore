@@ -113,8 +113,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="bg-gradient-to-br from-blue-50 via-white to-emerald-50">
+      <div className="mx-auto">
         {/* Cover Photo */}
         <div className="relative h-24 bg-gradient-to-r from-blue-600 to-emerald-500 rounded-t-3xl overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>

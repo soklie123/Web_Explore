@@ -9,7 +9,6 @@ interface StatCardProps {
   iconColor: string;
   onClick?: () => void;
 }
-
 export const StatCard: React.FC<StatCardProps> = ({
   title,
   value,

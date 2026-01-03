@@ -11,6 +11,13 @@ interface DiscoveryJourneyProps {
   recentActivities?: number;
   activitiesToday?: number;
 }
+const scrollToSection = (id: string) => {
+  document.getElementById(id)?.scrollIntoView({ 
+    behavior: "smooth" ,
+    block: 'start',
+  })
+}
+
 
 export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
   totalCountries = 195,
@@ -21,6 +28,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
   activitiesToday = 5,
 }) => {
   const router = useRouter();
+  
 
   return (
     <div className="w-full max-w-7xl mx-auto">
@@ -45,6 +53,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<TrendingUp className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
+          onClick={() => scrollToSection('countries-visited')}
         />
         
         <StatCard
@@ -53,6 +62,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<Heart className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
+          onClick={() => router.push('/user/favorite#favorite-saved')}
         />
         
         <StatCard
@@ -62,7 +72,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<Activity className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
-          onClick={() => router.push("/user/profile")}
+          onClick={() => router.push('/user/profile#recent-activities')}
         />
       </div>
     </div>

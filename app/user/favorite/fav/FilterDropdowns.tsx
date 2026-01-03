@@ -1,122 +1,190 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'
 
-export default function FilterDropdowns() {
-  const [selectedContinent, setSelectedContinent] = useState('Asia');
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [continentOpen, setContinentOpen] = useState(false);
-  const [countryOpen, setCountryOpen] = useState(false);
+type FilterDropdownsProps = {
+  regions: { name: string; count: number }[]
+  countries: string[]
+  selectedRegion: string
+  selectedCountry: string
+  onFilterChange: (region: string, country: string) => void
+}
 
-  const continents = [
-    { name: 'Asia', count: 1 },
-    { name: 'Europe', count: 5 },
-    { name: 'Africa', count: 3 },
-    { name: 'North America', count: 2 },
-    { name: 'South America', count: 4 },
-    { name: 'Oceania', count: 1 }
-  ];
+export default function FilterDropdowns({
+  regions,
+  countries,
+  selectedRegion,
+  selectedCountry,
+  onFilterChange
+}: FilterDropdownsProps) {
+  const [regionOpen, setRegionOpen] = useState(false)
+  const [countryOpen, setCountryOpen] = useState(false)
 
-  const countries = [
-    'Japan',
-    'China',
-    'South Korea',
-    'Thailand',
-    'Vietnam',
-    'Indonesia'
-  ];
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setRegionOpen(false)
+      setCountryOpen(false)
+    }
+
+    if (regionOpen || countryOpen) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [regionOpen, countryOpen])
+
+  const handleRegionSelect = (region: string) => {
+    const newRegion = region === selectedRegion ? '' : region
+    onFilterChange(newRegion, '')
+    setRegionOpen(false)
+  }
+
+  const handleCountrySelect = (country: string) => {
+    const newCountry = country === selectedCountry ? '' : country
+    onFilterChange(selectedRegion, newCountry)
+    setCountryOpen(false)
+  }
+
+  const handleClearFilters = () => {
+    onFilterChange('', '')
+  }
+
+  const totalSelected = regions.find(r => r.name === selectedRegion)?.count || 0
 
   return (
-    <div className="pt-2 bg-gray-50">
-      <div className="max-w-2xl">
-        <div className="bg-white rounded-2xl shadow-sm p-4 inline-flex gap-3">
-          {/* Continent Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setContinentOpen(!continentOpen);
-                setCountryOpen(false);
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-green-50 border border-green-300 rounded-lg hover:bg-green-100 transition-colors"
-            >
-              <span className="font-medium text-gray-800">{selectedContinent}</span>
-              <span className="flex items-center justify-center w-5 h-5 bg-green-500 text-white text-xs font-semibold rounded-full">
-                1
-              </span>
-              <svg 
-                className={`w-4 h-4 text-gray-600 transition-transform ${continentOpen ? 'rotate-180' : ''}`}
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
+    <div className="flex flex-wrap items-center gap-3">
+      {/* Region Dropdown */}
+      <div className="relative">
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            setRegionOpen(!regionOpen)
+            setCountryOpen(false)
+          }}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all ${
+            selectedRegion
+              ? 'bg-blue-500 text-white hover:bg-blue-600'
+              : 'bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30'
+          }`}
+        >
+          <span className="font-medium">
+            {selectedRegion || 'Region'}
+          </span>
+          {selectedRegion && (
+            <span className="flex items-center justify-center min-w-[20px] h-5 bg-white/30 text-white text-xs font-semibold rounded-full px-1.5">
+              {totalSelected}
+            </span>
+          )}
+          <svg 
+            className={`w-4 h-4 transition-transform ${regionOpen ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {regionOpen && (
+          <div className="absolute top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-20">
+            <div className="px-4 py-2 border-b border-gray-100">
+              <p className="text-xs font-semibold text-gray-500 uppercase">Select Region</p>
+            </div>
+            {regions.map((region) => (
+              <button
+                key={region.name}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleRegionSelect(region.name)
+                }}
+                className="w-full px-4 py-2.5 text-left hover:bg-blue-50 flex items-center justify-between transition-colors group"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            {continentOpen && (
-              <div className="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-10">
-                {continents.map((continent) => (
-                  <button
-                    key={continent.name}
-                    onClick={() => {
-                      setSelectedContinent(continent.name);
-                      setContinentOpen(false);
-                    }}
-                    className="w-full px-4 py-2.5 text-left hover:bg-gray-50 flex items-center justify-between transition-colors"
-                  >
-                    <span className={`text-sm ${selectedContinent === continent.name ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
-                      {continent.name}
-                    </span>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                      {continent.count}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
+                <span className={`text-sm ${
+                  selectedRegion === region.name 
+                    ? 'font-semibold text-blue-600' 
+                    : 'text-gray-700 group-hover:text-gray-900'
+                }`}>
+                  {region.name}
+                </span>
+                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                  {region.count}
+                </span>
+              </button>
+            ))}
           </div>
-
-          {/* Country Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setCountryOpen(!countryOpen);
-                setContinentOpen(false);
-              }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <span className="font-medium text-gray-800">
-                {selectedCountry || 'Country'}
-              </span>
-              <svg 
-                className={`w-4 h-4 text-gray-600 transition-transform ${countryOpen ? 'rotate-180' : ''}`}
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            {countryOpen && (
-              <div className="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-10">
-                {countries.map((country) => (
-                  <button
-                    key={country}
-                    onClick={() => {
-                      setSelectedCountry(country);
-                      setCountryOpen(false);
-                    }}
-                    className="w-full px-4 py-2.5 text-left hover:bg-gray-50 transition-colors"
-                  >
-                    <span className={`text-sm ${selectedCountry === country ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
-                      {country}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </div>
+
+      {/* Country Dropdown */}
+      <div className="relative">
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            setCountryOpen(!countryOpen)
+            setRegionOpen(false)
+          }}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all ${
+            selectedCountry
+              ? 'bg-blue-500 text-white hover:bg-blue-600'
+              : 'bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30'
+          }`}
+        >
+          <span className="font-medium">
+            {selectedCountry || 'Country'}
+          </span>
+          <svg 
+            className={`w-4 h-4 transition-transform ${countryOpen ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {countryOpen && (
+          <div className="absolute top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-20 max-h-80 overflow-y-auto">
+            <div className="px-4 py-2 border-b border-gray-100 sticky top-0 bg-white">
+              <p className="text-xs font-semibold text-gray-500 uppercase">Select Country</p>
+            </div>
+            {countries.length === 0 ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-500">
+                No countries available
+              </div>
+            ) : (
+              countries.map((country) => (
+                <button
+                  key={country}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleCountrySelect(country)
+                  }}
+                  className="w-full px-4 py-2.5 text-left hover:bg-blue-50 transition-colors group"
+                >
+                  <span className={`text-sm ${
+                    selectedCountry === country 
+                      ? 'font-semibold text-blue-600' 
+                      : 'text-gray-700 group-hover:text-gray-900'
+                  }`}>
+                    {country}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Clear Filters Button */}
+      {(selectedRegion || selectedCountry) && (
+        <button
+          onClick={handleClearFilters}
+          className="flex items-center gap-2 px-4 py-2.5 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 rounded-lg transition-all"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span className="font-medium">Clear</span>
+        </button>
+      )}
     </div>
-  );
+  )
 }

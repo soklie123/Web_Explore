@@ -1,19 +1,33 @@
+'use client'
+
+import { useEffect } from 'react'
 import ProfileView from './info/ProfileView'
 import CountryList from '../countries/list/CountryList'
 import { countries } from '../countries/list/DataCard'
 
-const page = () => {
+const RecentActivity = () => {
+  useEffect(() => {
+    const hash = window.location.hash
+    if (hash) {
+      const el = document.getElementById(hash.substring(1))
+      el?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [])
+
   return (
-    <div>
-      <ProfileView/>
-      <CountryList 
-        title="Recent Activity"
-        description="Discover our handpicked selection of must-visit destinations"
-        countries={countries}
-        horizontalScroll={true} 
-      />
-    </div>
+    <main>
+      <ProfileView />
+
+      <div id="recent-activities">
+        <CountryList 
+          title="Recent Activities"
+          description="Discover our handpicked selection of must-visit destinations"
+          countries={countries}
+          horizontalScroll={true}
+        />
+      </div>
+    </main>
   )
 }
 
-export default page
+export default RecentActivity

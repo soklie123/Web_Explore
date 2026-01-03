@@ -2,24 +2,15 @@
 
 import { TrendingUp, Compass } from "lucide-react"
 import { useRef, useState } from "react"
-import PopularCountryList from "../list/PopularCountryList"
 import ExploreButton from "../function/ExploreButton"
 import { countries } from "../list/DataCard"
 
 export default function Home() {
   const popularRef = useRef<HTMLDivElement>(null)
-  const [showPopular, setShowPopular] = useState(false)
 
-  const scrollToPopular = () => {
-    setShowPopular(true)
-
-    setTimeout(() => {
-      popularRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      })
-    }, 100)
-  }
+  const scrollToSection = (id: string) => {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+}
 
   return (
     <main>
@@ -62,7 +53,7 @@ export default function Home() {
             <ExploreButton />
 
             <button
-              onClick={scrollToPopular}
+              onClick={() => scrollToSection('countries-popular')}
               className="
                 flex justify-center gap-2
                 bg-white hover:bg-gray-50
@@ -78,18 +69,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Popular Countries */}
-      {showPopular && (
-        <div ref={popularRef}>
-          <PopularCountryList
-            id="popular"
-            title="Popular Destinations"
-            description="Trending countries loved by our community"
-            countries={countries}
-          />
-        </div>
-      )}
     </main>
   )
 }

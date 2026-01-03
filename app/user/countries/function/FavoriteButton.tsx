@@ -10,11 +10,31 @@ type FavoriteButtonProps = {
 
 export default function FavoriteButton({ slug, showLabel = false, inline = false }: FavoriteButtonProps) {
   const [isFavorite, setIsFavorite] = React.useState(false)
-  
+
+   // On mount, check if this country is already favorite
+  React.useEffect(() => {
+    const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setIsFavorite(favs.includes(slug));
+  }, [slug]);
+
   const toggleFavorite = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent parent click events
-    setIsFavorite(!isFavorite)
-  }
+    e.stopPropagation(); // Prevent card click navigation
+
+    const favs: string[] = JSON.parse(localStorage.getItem("favorites") || "[]");
+
+    let updatedFavs;
+    if (favs.includes(slug)) {
+      // Remove from favorites
+      updatedFavs = favs.filter(f => f !== slug);
+      setIsFavorite(false);
+    } else {
+      // Add to favorites
+      updatedFavs = [...favs, slug];
+      setIsFavorite(true);
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(updatedFavs));
+  };
   
   // If inline mode (for use inside another button)
   if (inline) {
@@ -23,11 +43,11 @@ export default function FavoriteButton({ slug, showLabel = false, inline = false
         {isFavorite ? (
           <span className="pi pi-heart-fill text-red-500"></span>
         ) : (
-          <span className="pi pi-heart text-white"></span>
+          <span className="pi pi-heart text-gray-400"></span>
         )}
         {showLabel && <span className="text-sm font-medium">Favorite</span>}
       </div>
-    )
+    );
   }
     
   // Original absolute positioned version (for use on cards)
