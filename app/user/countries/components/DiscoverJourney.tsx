@@ -1,6 +1,7 @@
 import React from 'react';
 import { Globe, TrendingUp, Heart, Activity } from 'lucide-react';
 import { StatCard } from './StatCard';
+import { useRouter } from "next/navigation";
 
 interface DiscoveryJourneyProps {
   totalCountries?: number;
@@ -19,8 +20,10 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
   recentActivities = 28,
   activitiesToday = 5,
 }) => {
+  const router = useRouter();
+
   return (
-    <div className="w-full max-w-7xl mx-auto p-6">
+    <div className="w-full max-w-7xl mx-auto">
       <h1 className="text-2xl font-regular text-gray-800 mb-6">
         Your Discovery Journey
       </h1>
@@ -32,6 +35,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<Globe className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
+          onClick={() => router.push("/user/explore")}
         />
         
         <StatCard
@@ -58,6 +62,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<Activity className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
+          onClick={() => router.push("/user/profile")}
         />
       </div>
     </div>

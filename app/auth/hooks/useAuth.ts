@@ -32,9 +32,11 @@ export const useAuth = () => {
       ? (docSnap.data()?.role as string).trim().toLowerCase()  // Normalize to lowercase
       : "user";
 
+      localStorage.setItem("userRole", role);
+
       // Redirect based on role
       if (role === "admin") {
-        router.push("/admin");
+        router.push("/admin/dashboard");
       } else {
         router.push("/user");
       }
@@ -72,7 +74,7 @@ export const useAuth = () => {
       localStorage.setItem("authToken", token);
 
       // Set default role in Firestore
-      await authService.setUserRole(user.uid, "user");
+      
       router.push("/user");
       return { success: true, role: "user" };
     } catch (err: unknown) {
@@ -98,11 +100,13 @@ export const useAuth = () => {
 
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
+
       const role = docSnap.exists() && docSnap.data()?.role 
       ? (docSnap.data()?.role as string).trim() 
       : "user";
+      localStorage.setItem("userRole", role); 
 
-      if (role === "admin") router.push("/admin");
+      if (role === "admin") router.push("/admin/dashboard");
       else router.push("/user");
 
       return { success: true, role };
@@ -140,7 +144,8 @@ export const useAuth = () => {
 
     try {
       await authService.logout();
-      router.push("/auth/login");
+      localStorage.removeItem("userRole"); // remove role
+      router.push("/auth");
       return { success: true };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Logout failed";

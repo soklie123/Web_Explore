@@ -35,7 +35,7 @@ export default function Navbar() {
         <Link href="/user" className="flex items-center gap-2 flex-shrink-0">
           <Globe className="w-8 h-8 text-sky-600" />
           <span className="hidden sm:block font-semibold text-lg bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent whitespace-nowrap transition-all duration-300">
-            CountryExplorer
+            ExploreVista
           </span>
         </Link>
 

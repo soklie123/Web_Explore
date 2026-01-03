@@ -99,7 +99,7 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await signOut(auth)
-      window.location.href = '/auth/login'
+      window.location.href = '/auth'
     } catch (err) {
       console.error(err)
       alert('Failed to logout. Please try again.')
