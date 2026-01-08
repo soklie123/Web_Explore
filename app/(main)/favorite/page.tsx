@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import CountryList, { Country } from "../countries/list/CountryList"
-import { countries as allCountries } from "../countries/list/DataCard"
+import CountryList, { Country } from "../../user/countries/list/CountryList"
+import { countries as allCountries } from "../../user/countries/list/DataCard"
 import FilterDropdowns from "./fav/FilterDropdowns"
 import Link from 'next/link'
 

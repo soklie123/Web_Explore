@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { User, LogOut, Edit2, Mail, Calendar, MapPin } from 'lucide-react'
+import { LogOut, Edit2, Mail, Calendar, MapPin } from 'lucide-react'
 import { onAuthStateChanged, updateProfile, signOut, User as FirebaseUser } from 'firebase/auth'
 import { auth, db } from '@/app/auth/lib/firebase'
 import { doc, getDoc, setDoc } from 'firebase/firestore'

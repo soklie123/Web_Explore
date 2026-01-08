@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useMemo } from "react"
-import CountryList from "../countries/list/CountryList"
-import { countries as allCountries } from "../countries/list/DataCard"
+import CountryList from "../../user/countries/list/CountryList"
+import { countries as allCountries } from "../../user/countries/list/DataCard"
 import ExploreFilter from "./cards/ExploreFilter"
 
 export default function Explore() {

@@ -13,9 +13,9 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Home", path: "/" },
-    { name: "Explore", path: "/user/explore" },
-    { name: "Favorites", path: "/user/favorite" },
-    { name: "Profile", path: "/user/profile" },
+    { name: "Explore", path: "/explore" },
+    { name: "Favorites", path: "/favorite" },
+    { name: "Profile", path: "/profile" },
   ]
 
   const checkActive = (path: string) => {
