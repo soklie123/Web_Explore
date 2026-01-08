@@ -182,7 +182,7 @@ export default function FilterDropdowns({
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
-          <span className="font-medium">Clear</span>
+          <span className="font-medium">Cklear</span>
         </button>
       )}
     </div>

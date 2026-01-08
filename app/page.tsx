@@ -1,34 +1,58 @@
-import Link from "next/link";
+'use client'
+
+import { useEffect, useState } from "react";
+import MainPage from "./user/countries/components/MainPage";
+import { DiscoveryJourney } from "./user/countries/components/DiscoverJourney";
+import CountryList from "./user/countries/list/CountryList";
+import ExploreMoreSection from "./user/countries/components/ExploreMoreSection";
+import { countries as allCountries } from './user/countries/list/DataCard'
 
 export default function Home() {
+  const [recentCountries, setRecentCountries] = useState<typeof allCountries>([])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    setTimeout(() => {
+      const viewedSlugs: string[] = JSON.parse(localStorage.getItem('recentlyViewed') || '[]')
+      if (viewedSlugs.length === 0) return
+
+      const filtered = allCountries.filter(c => viewedSlugs.includes(c.slug))
+      filtered.sort((a, b) => viewedSlugs.indexOf(a.slug) - viewedSlugs.indexOf(b.slug))
+
+      setRecentCountries(filtered)
+    }, 0)
+  }, [])
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-6 bg-gray-100">
-      <p className="text-xl font-semibold text-gray-800">
-        Click to see each page
-      </p>
+    <>
+      <MainPage/>
+      <DiscoveryJourney/>
 
-      <div className="flex flex-col gap-4">
-        <Link
-          href="/user"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 transition"
-        >
-          User Page
-        </Link>
+      <CountryList
+        title="Featured Countries"
+        description="Discover our handpicked selection of must-visit destinations"
+        countries={allCountries}
+      />
 
-        <Link
-          href="/admin"
-          className="px-6 py-3 bg-green-600 text-white rounded-lg text-center hover:bg-green-700 transition"
-        >
-          Admin Page
-        </Link>
+      {recentCountries.length > 0 && (
+        <CountryList
+          id="countries-visited"
+          title="Recently Viewed"
+          description="Continue exploring where you left off"
+          countries={recentCountries}
+          horizontalScroll={true}
+        />
+      )}
 
-        <Link
-          href="/auth"
-          className="px-6 py-3 bg-purple-600 text-white rounded-lg text-center hover:bg-purple-700 transition"
-        >
-          Auth Page
-        </Link>
-      </div>
-    </main>
+      <CountryList
+        id="countries-popular"
+        title="Popular Destinations"
+        description="Trending countries loved by our community"
+        countries={allCountries}
+      />
+
+      <ExploreMoreSection/>
+    </>
   );
 }

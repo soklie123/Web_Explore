@@ -12,14 +12,14 @@ export default function Navbar() {
   const pathname = usePathname()
 
   const navItems = [
-    { name: "Home", path: "/user" },
+    { name: "Home", path: "/" },
     { name: "Explore", path: "/user/explore" },
     { name: "Favorites", path: "/user/favorite" },
     { name: "Profile", path: "/user/profile" },
   ]
 
   const checkActive = (path: string) => {
-    if (path === "/user") return pathname === "/user"
+    if (path === "/") return pathname === "/"
     return pathname.startsWith(path)
   }
 
@@ -31,7 +31,7 @@ export default function Navbar() {
       <div className="flex items-center justify-between max-w-7xl mx-auto px-4 py-2">
 
         {/* Logo */}
-        <Link href="/user" className="flex items-center gap-2 flex-shrink-0">
+        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
           <Globe className="w-8 h-8 text-sky-600" />
           <span className="hidden sm:block font-semibold text-lg bg-gradient-to-r 
                       from-blue-600 to-emerald-500 bg-clip-text text-transparent 
