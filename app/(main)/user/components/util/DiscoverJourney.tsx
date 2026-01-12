@@ -43,7 +43,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<Globe className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
-          onClick={() => router.push("/user/explore")}
+          onClick={() => router.push("/explore")}
         />
         
         <StatCard
@@ -62,7 +62,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<Heart className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
-          onClick={() => router.push('/user/favorite#favorite-saved')}
+          onClick={() => router.push('/favorite#favorite-saved')}
         />
         
         <StatCard
@@ -72,7 +72,7 @@ export const DiscoveryJourney: React.FC<DiscoveryJourneyProps> = ({
           icon={<Activity className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
-          onClick={() => router.push('/user/profile#recent-activities')}
+          onClick={() => router.push('/profile#recent-activities')}
         />
       </div>
     </div>

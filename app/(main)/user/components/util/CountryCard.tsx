@@ -36,6 +36,7 @@ export default function CountryCard({
   const updated = [slug!, ...viewed.filter(s => s !== slug!)].slice(0, 10) // Keep last 10
 
   localStorage.setItem("recentlyViewed", JSON.stringify(updated))
+  const currentPath = window.location.pathname
 
     router.push(`/user/${slug}/overview`)
   }

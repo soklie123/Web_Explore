@@ -3,7 +3,7 @@
 import { TrendingUp, Compass } from "lucide-react"
 import { useRef, useState } from "react"
 import ExploreButton from "../function/ExploreButton"
-import { countries } from "../list/DataCard"
+
 
 export default function Home() {
   const popularRef = useRef<HTMLDivElement>(null)

@@ -6,7 +6,7 @@ import ExploreButton from "../function/ExploreButton";
 export default function ExploreMoreSection() {
   const router = useRouter();
   const handleClick = () => {
-    router.push("/user/favorite"); // navigate to the favorites page
+    router.push("/favorite"); // navigate to the favorites page
   };
   return (
     <div className="w-full bg-gradient-to-br from-blue-50 to-indigo-50 py-16 px-4">

@@ -55,7 +55,7 @@ export const countries: Country[] = [
     name: "Australia",
     slug: "australia",
     image: "/images/austalia.png",
-    region: "Ocean",
+    region: "Oceania",
     city: "Canberra",
     population: "213M",
     description: "A land of unique wildlife, stunning beaches, and the iconic Sydney Opera House. Adventure awaits down under.",

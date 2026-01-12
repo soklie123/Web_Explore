@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Heart } from "lucide-react"
 
 export default function ManageCountriesPage() {
-  const [countries, setCountries] = useState<any[]>([])
+  const [countries, setCountries] = useState<never[]>([])
   const [filteredCountries, setFilteredCountries] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")

@@ -1,8 +1,11 @@
 "use client"
+
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LayoutDashboard, Globe, Lightbulb, BarChart3, Columns3, Users, LogOut } from "lucide-react"
+import { signOut } from "firebase/auth"
+import { auth, db } from "@/app/auth/lib/firebase"
 
 interface AdminSidebarProps {
   open: boolean
@@ -22,9 +25,16 @@ export function Sidebar({ open, setOpen }: AdminSidebarProps) {
     { label: "Manage Users", href: "/admin/users", icon: Users },
   ]
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminUser")
-    router.push("/login")
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      localStorage.removeItem("authToken")
+      localStorage.removeItem("userRole")
+      router.push("/auth")
+    } catch (error) {
+      console.error("Logout error:", error)
+      alert("Failed to logout. Please try again.")
+    }
   }
 
   return (
@@ -36,7 +46,7 @@ export function Sidebar({ open, setOpen }: AdminSidebarProps) {
         } fixed md:relative z-50 h-full bg-white border-r border-slate-200 transition-all duration-300 ease-in-out flex flex-col shadow-sm`}
       >
         <div className="p-6 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
             <Globe size={18} />
           </div>
           <h1 className={`font-bold text-slate-800 transition-opacity duration-200 ${!open && "md:opacity-0"}`}>
@@ -75,7 +85,9 @@ export function Sidebar({ open, setOpen }: AdminSidebarProps) {
             onClick={handleLogout}
           >
             <LogOut size={20} />
-            Logout
+            <span className={`transition-opacity duration-200 ${!open && "md:opacity-0"}`}>
+              Logout
+            </span>
           </Button>
         </div>
       </aside>

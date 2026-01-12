@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import MainPage from "../user/countries/components/MainPage";
-import { DiscoveryJourney } from "../user/countries/components/DiscoverJourney";
-import CountryList from "../user/countries/list/CountryList";
-import ExploreMoreSection from "../user/countries/components/ExploreMoreSection";
-import { countries as allCountries } from '../user/countries/list/DataCard'
+import { DiscoveryJourney } from "./user/components/util/DiscoverJourney";
+import CountryList from "./user/components/list/CountryList";
+import ExploreMoreSection from "./user/components/util/ExploreMoreSection";
+import { countries as allCountries } from './user/components/list/DataCard'
+import MainPage from "./user/components/util/MainPage";
 
 export default function Home() {
   const [recentCountries, setRecentCountries] = useState<typeof allCountries>([])

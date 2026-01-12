@@ -1,9 +1,10 @@
 import React from 'react'
+import SettingsPage from './setting/SettingPage'
 
 const page = () => {
   return (
     <div>
-        Tip display from Admin
+        <SettingsPage/>
     </div>
   )
 }

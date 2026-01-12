@@ -100,7 +100,7 @@ export default function ExploreFilter({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 max-w-6xl mx-auto mt-6">
+    <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 max-w-7xl mx-auto mt-6">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">

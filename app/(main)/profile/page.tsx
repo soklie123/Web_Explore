@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react'
 import ProfileView from './info/ProfileView'
-import CountryList from '../../user/countries/list/CountryList'
-import { countries } from '../../user/countries/list/DataCard'
+import CountryList from '../user/components/list/CountryList'
+import { countries } from '../user/components/list/DataCard'
 
 const RecentActivity = () => {
   useEffect(() => {

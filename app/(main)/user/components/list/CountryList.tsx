@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import CountryCard from '../components/CountryCard'
+import CountryCard from '../util/CountryCard'
 import SectionHeader from '../function/SectionHeader'
 
 export type Country = {

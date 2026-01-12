@@ -14,7 +14,7 @@ import { OverviewStats } from '@/components/overview-stats'
 
 
 export default function AdminDashboard() {
-  const [countries, setCountries] = useState<any[]>([])
+  const [countries, setCountries] = useState<never[]>([])
   const [loading, setLoading] = useState(true)
   const [featuredCount, setFeaturedCount] = useState(0)
 

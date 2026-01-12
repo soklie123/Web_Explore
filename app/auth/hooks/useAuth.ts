@@ -38,7 +38,7 @@ export const useAuth = () => {
       if (role === "admin") {
         router.push("/admin/dashboard");
       } else {
-        router.push("/user");
+        router.push("/");
       }
         
       return { success: true, role };
@@ -75,7 +75,7 @@ export const useAuth = () => {
 
       // Set default role in Firestore
       
-      router.push("/user");
+      router.push("/");
       return { success: true, role: "user" };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Signup failed";
@@ -107,7 +107,7 @@ export const useAuth = () => {
       localStorage.setItem("userRole", role); 
 
       if (role === "admin") router.push("/admin/dashboard");
-      else router.push("/user");
+      else router.push("/");
 
       return { success: true, role };
     } catch (err: unknown) {

@@ -17,7 +17,7 @@ export default function ExploreButton({
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/user/explore"); // navigate to /explore page
+    router.push("/explore"); // navigate to /explore page
   };
 
   return (

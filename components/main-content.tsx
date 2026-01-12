@@ -12,7 +12,7 @@ export function MainContent() {
         {/* Header Section */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back! Here's your travel platform overview.</p>
+          <p className="text-muted-foreground">Welcome back! Here&apos;s your travel platform overview.</p>
         </div>
 
         {/* Stats Grid */}
