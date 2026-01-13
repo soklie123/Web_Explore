@@ -174,14 +174,14 @@ export default function Navbar() {
           {/* Dark/Light Mode Toggle */}
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2 rounded-full hover:bg-gray-200 transition-transform duration-300"
+            className="mr-8 rounded-full hover:bg-gray-200 transition-transform duration-300"
             title="Toggle Theme"
             aria-label="Toggle dark mode"
           >
             {darkMode ? (
-              <Sun className="w-5 h-5 text-gray-500 transition-transform duration-300" />
+              <Sun className="w-6 h-6 text-gray-500 transition-transform duration-300" />
             ) : (
-              <Moon className="w-5 h-5 text-gray-500 transition-transform duration-300" />
+              <Moon className="w-6 h-6 text-gray-500 transition-transform duration-300" />
             )}
           </button>   
 

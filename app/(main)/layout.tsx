@@ -1,3 +1,4 @@
+import { ThemeProvider } from "next-themes";
 import Footer from "./user/components/util/Footer";
 import Navbar from "./user/components/util/Navbar";
 
