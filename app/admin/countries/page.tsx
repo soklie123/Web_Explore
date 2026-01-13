@@ -6,10 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Heart } from "lucide-react"
+import { Country } from "@/lib/types"
 
 export default function ManageCountriesPage() {
-  const [countries, setCountries] = useState<never[]>([])
-  const [filteredCountries, setFilteredCountries] = useState<any[]>([])
+  const [countries, setCountries] = useState<Country[]>([])
+  const [filteredCountries, setFilteredCountries] = useState<Country[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedRegion, setSelectedRegion] = useState("all")
@@ -30,7 +31,7 @@ export default function ManageCountriesPage() {
         setCountries(countriesArray)
         setFilteredCountries(countriesArray)
 
-        const uniqueRegions = [...new Set(countriesArray.map((c: any) => c.region))].filter(Boolean).sort()
+        const uniqueRegions = [...new Set(countriesArray.map((c: Country) => c.region))].filter(Boolean).sort()
         setRegions(uniqueRegions as string[])
 
         const storedFeatured = JSON.parse(localStorage.getItem("featuredCountries") || "[]")
