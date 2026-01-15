@@ -2,30 +2,23 @@
 
 import { useEffect, useState } from "react"
 import { AdminLayout } from "@/components/admin-layout"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { OverviewStats } from '@/components/overview-stats'
-
-
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { OverviewStats } from "@/components/overview-stats"
+import { apiService } from "@/lib/api-service"
 
 export default function AdminDashboard() {
-  const [countries, setCountries] = useState<never[]>([])
+  const [countries, setCountries] = useState<any[]>([])
+  const [featuredCountries, setFeaturedCountries] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [featuredCount, setFeaturedCount] = useState(0)
 
- useEffect(() => {
+  // Fetch all countries
+  useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch('https://restcountries.com/v3.1/all')
-        const data = await response.json()
+        const data = await apiService.getAllCountries()
         setCountries(data)
       } catch (error) {
-        console.error('Error fetching countries:', error)
+        console.error("Error fetching countries:", error)
       } finally {
         setLoading(false)
       }
@@ -34,17 +27,17 @@ export default function AdminDashboard() {
     fetchCountries()
   }, [])
 
-   useEffect(() => {
-    // SAFE localStorage access
-    const stored = localStorage.getItem('featuredCountries')
-    const parsed = stored ? JSON.parse(stored) : []
-    setFeaturedCount(parsed.length)
+  // Read featured countries from localStorage safely
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = JSON.parse(localStorage.getItem("featuredCountries") || "[]")
+      setFeaturedCountries(stored)
+    }
   }, [])
 
-return (
+  return (
     <AdminLayout>
       <div className="space-y-8">
-        {/* HERO */}
         <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-blue-600 to-teal-500 p-8 text-white shadow-xl shadow-blue-600/20">
           <div className="relative z-10 max-w-2xl">
             <h1 className="text-4xl font-bold mb-2">Discover the World</h1>
@@ -59,33 +52,27 @@ return (
         {!loading && <OverviewStats countries={countries} />}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* TOTAL COUNTRIES */}
           <Card className="border-none shadow-sm hover:shadow-md transition-shadow duration-300">
             <CardHeader>
               <CardTitle className="text-slate-800">Total Countries</CardTitle>
               <CardDescription>Global database coverage</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-black text-blue-600">
-                {countries.length}
-              </div>
+              <div className="text-4xl font-black text-blue-600">{countries.length}</div>
             </CardContent>
           </Card>
 
-          {/* FEATURED COUNTRIES */}
           <Card className="border-none shadow-sm hover:shadow-md transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-slate-800">
-                Featured Countries
-              </CardTitle>
+              <CardTitle className="text-slate-800">Featured Countries</CardTitle>
               <CardDescription>Marked as featured</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-black text-blue-600">
-                {featuredCount}
-              </div>
+              <div className="text-4xl font-black text-blue-600">{featuredCountries.length}</div>
             </CardContent>
           </Card>
+
+          {/* Additional card for user analytics can be added here */}
         </div>
       </div>
     </AdminLayout>

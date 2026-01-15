@@ -18,7 +18,7 @@ export function CountryTips({ countryName, countryFlag }: CountryTipsProps) {
   const [isFeatured, setIsFeatured] = useState(false);
   const [newTip, setNewTip] = useState('');
   const [category, setCategory] = useState<CountryTip['category']>('other');
-  // const [isAdding, setIsAdding] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     setTips(tipsStorage.getTipsByCountry(countryName));

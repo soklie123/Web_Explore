@@ -19,7 +19,12 @@ export default function AnalyticsDashboard() {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch("https://restcountries.com/v3.1/all")
+        const fieldsParam = "fields=name,region,population,area,flag,capital,languages,currencies"
+        const response = await fetch(`https://restcountries.com/v3.1/all?${fieldsParam}`, {
+          headers: {
+            Accept: "application/json",
+          },
+        })
         const data = await response.json()
         setCountries(data)
         setAllCountries(data)

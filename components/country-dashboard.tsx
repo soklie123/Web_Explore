@@ -1,134 +1,113 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { DashboardHeader } from "./dashboard-header"
-import { OverviewStats } from "./overview-stats"
-import { CountriesTable } from "./countries-table"
-import { AnalyticsCharts } from "./analytics-charts"
-import { CountryComparison } from "./country-comparison"
-import type { Country } from "@/lib/types"
+import { Country } from "@/lib/types"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
-export function CountryDashboard() {
-  const [activeTab, setActiveTab] = useState("overview")
-  const [countries, setCountries] = useState<Country[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedRegion, setSelectedRegion] = useState("all")
-  const [sortBy, setSortBy] = useState("name")
+interface CountriesTableProps {
+  countries: Country[]
+  searchQuery: string
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>
+  selectedRegion: string
+  setSelectedRegion: React.Dispatch<React.SetStateAction<string>>
+  sortBy: string
+  setSortBy: React.Dispatch<React.SetStateAction<string>>
+  filteredCountries: Country[]
+}
 
-  useEffect(() => {
-    fetchCountries()
-  }, [])
-
-  const fetchCountries = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      // ⚠️ Use API route instead of direct RESTCountries call
-      const response = await fetch("/api/countries", { cache: "no-store" })
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch countries")
-      }
-
-      const data: Country[] = await response.json()
-      setCountries(data)
-    } catch (err) {
-      setError("Failed to fetch countries")
-      console.error("[CountryDashboard] Error:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const getFilteredCountries = () => {
-    let filtered = [...countries]
-
-    if (searchQuery.trim()) {
-      filtered = filtered.filter((c) =>
-        c.name?.common?.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
-
-    if (selectedRegion !== "all") {
-      filtered = filtered.filter((c) => c.region === selectedRegion)
-    }
-
-    if (sortBy === "population") {
-      filtered.sort((a, b) => (b.population || 0) - (a.population || 0))
-    } else if (sortBy === "area") {
-      filtered.sort((a, b) => (b.area || 0) - (a.area || 0))
-    } else {
-      filtered.sort((a, b) =>
-        (a.name?.common || "").localeCompare(b.name?.common || "")
-      )
-    }
-
-    return filtered
-  }
-
-  const filteredCountries = getFilteredCountries()
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-slate-300">Loading countries data...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-400 mb-4">{error}</p>
-          <button
-            onClick={fetchCountries}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    )
-  }
-
+export function CountriesTable({
+  searchQuery,
+  setSearchQuery,
+  selectedRegion,
+  setSelectedRegion,
+  sortBy,
+  setSortBy,
+  filteredCountries,
+}: CountriesTableProps) {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
-      <DashboardHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="space-y-6">
+      {/* Controls */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Input
+          placeholder="Search countries..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === "overview" && <OverviewStats countries={countries} />}
+        <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Region" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Regions</SelectItem>
+            <SelectItem value="Africa">Africa</SelectItem>
+            <SelectItem value="Americas">Americas</SelectItem>
+            <SelectItem value="Asia">Asia</SelectItem>
+            <SelectItem value="Europe">Europe</SelectItem>
+            <SelectItem value="Oceania">Oceania</SelectItem>
+          </SelectContent>
+        </Select>
 
-        {activeTab === "countries" && (
-          <CountriesTable
-            countries={countries}
-            filteredCountries={filteredCountries}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-          />
-        )}
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="population">Population</SelectItem>
+            <SelectItem value="area">Area</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-        {activeTab === "analytics" && (
-          <AnalyticsCharts
-            countries={filteredCountries}
-            allCountries={countries}
-            searchQuery={searchQuery}
-            selectedRegion={selectedRegion}
-            sortBy={sortBy}
-          />
-        )}
+      {/* Table */}
+      <div className="overflow-x-auto rounded-lg border border-slate-700">
+        <table className="min-w-full divide-y divide-slate-700">
+          <thead className="bg-slate-800">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase">Country</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase">Region</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-slate-300 uppercase">Population</th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-slate-300 uppercase">Area</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-700">
+            {filteredCountries.map((country) => (
+              <tr key={country.cca3} className="hover:bg-slate-800">
+                <td className="px-4 py-3 text-slate-200">
+                  {country.name?.common}
+                </td>
+                <td className="px-4 py-3 text-slate-400">
+                  {country.region}
+                </td>
+                <td className="px-4 py-3 text-right text-slate-400">
+                  {country.population?.toLocaleString()}
+                </td>
+                <td className="px-4 py-3 text-right text-slate-400">
+                  {country.area?.toLocaleString()}
+                </td>
+              </tr>
+            ))}
 
-        {activeTab === "compare" && <CountryComparison countries={countries} />}
+            {filteredCountries.length === 0 && (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-4 py-6 text-center text-slate-400"
+                >
+                  No countries found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   )
