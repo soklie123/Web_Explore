@@ -49,14 +49,6 @@ export function AdminHeader({ adminUser, setSidebarOpen }: AdminHeaderProps) {
         >
           <Menu size={20} />
         </Button>
-        <div className="hidden md:flex items-center bg-slate-100 rounded-full px-4 py-1.5 border border-slate-200 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-          <Search size={16} className="text-slate-400 mr-2" />
-          <input
-            type="text"
-            placeholder="Search countries..."
-            className="bg-transparent border-none outline-none text-sm w-48 lg:w-64"
-          />
-        </div>
       </div>
 
       <div className="flex items-center gap-2 md:gap-4">
