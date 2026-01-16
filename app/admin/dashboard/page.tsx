@@ -4,18 +4,16 @@ import { useEffect, useState } from "react"
 import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { OverviewStats } from "@/components/overview-stats"
-import { apiService } from "@/lib/api-service"
 
 export default function AdminDashboard() {
   const [countries, setCountries] = useState<any[]>([])
-  const [featuredCountries, setFeaturedCountries] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch all countries
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const data = await apiService.getAllCountries()
+        const response = await fetch("https://restcountries.com/v3.1/all")
+        const data = await response.json()
         setCountries(data)
       } catch (error) {
         console.error("Error fetching countries:", error)
@@ -25,14 +23,6 @@ export default function AdminDashboard() {
     }
 
     fetchCountries()
-  }, [])
-
-  // Read featured countries from localStorage safely
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = JSON.parse(localStorage.getItem("featuredCountries") || "[]")
-      setFeaturedCountries(stored)
-    }
   }, [])
 
   return (
@@ -68,11 +58,13 @@ export default function AdminDashboard() {
               <CardDescription>Marked as featured</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-black text-blue-600">{featuredCountries.length}</div>
+              <div className="text-4xl font-black text-blue-600">
+                {JSON.parse(localStorage.getItem("featuredCountries") || "[]").length}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Additional card for user analytics can be added here */}
+          {/* Additional card for user analytics can be added here if needed */}
         </div>
       </div>
     </AdminLayout>

@@ -1,30 +1,20 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useState } from "react"
 import { AdminLayout } from "@/components/admin-layout"
-import { Card, CardContent,  CardDescription, CardHeader, CardTitle, } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Eye, Globe, Users, Map, Trash2, Edit, Plus } from "lucide-react"
 import { apiService } from "@/lib/api-service"
-import { Trash2, Edit, Plus } from "lucide-react"
-import { Country } from "@/lib/types"
-import { Law, Attraction, Tip } from "@/lib/types"
-import {
-  Globe,
-  Map as MapIcon,
-  Users,
-  Eye,
-} from "lucide-react"
-
-
-const CATEGORIES = ["Laws", "Attractions", "Things To Do", "Tips"]
 
 export default function ManageCountriesPage() {
   const [countries, setCountries] = useState<any[]>([])
   const [filteredCountries, setFilteredCountries] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
   const [selectedRegion, setSelectedRegion] = useState("all")
   const [regions, setRegions] = useState<string[]>([])
   const [showModal, setShowModal] = useState(false)
@@ -40,42 +30,34 @@ export default function ManageCountriesPage() {
     overview: { short_description: "", currency: "", language: "" },
   })
 
- useEffect(() => {
-  const fetchCountries = async () => {
-    try {
-      const data = await apiService.getAllCountries()
-      setCountries(data)
-      setFilteredCountries(data)
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const data = await apiService.getAllCountries()
+        setCountries(data)
+        setFilteredCountries(data)
 
-      const uniqueRegions = [...new Set(data.map((c: any) => c.region))]
-        .filter(Boolean)
-        .sort()
-
-      setRegions(uniqueRegions as string[])
-    } catch (error) {
-      console.error(" Error loading countries:", error)
-    } finally {
-      setLoading(false)
+        const uniqueRegions = [...new Set(data.map((c: any) => c.region))].filter(Boolean).sort()
+        setRegions(uniqueRegions as string[])
+      } catch (error) {
+        console.error("[v0] Error loading countries:", error)
+      } finally {
+        setLoading(false)
+      }
     }
-  }
 
-  fetchCountries()
-}, [])
-
+    fetchCountries()
+  }, [])
 
   useEffect(() => {
     let filtered = countries
-
-    if (searchTerm) {
-      filtered = filtered.filter((c) => c.name?.toLowerCase().includes(searchTerm.toLowerCase()))
-    }
 
     if (selectedRegion !== "all") {
       filtered = filtered.filter((c) => c.region === selectedRegion)
     }
 
     setFilteredCountries(filtered)
-  }, [countries, searchTerm, selectedRegion])
+  }, [countries, selectedRegion])
 
   const handleAddCountry = () => {
     setEditingCountry(null)
@@ -172,17 +154,7 @@ export default function ManageCountriesPage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="text-sm font-medium">Search Country</label>
-            <Input
-              placeholder="Search by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="mt-1"
-            />
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium">Filter by Region</label>
             <select
@@ -213,9 +185,8 @@ export default function ManageCountriesPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 gap-4">
-              {filteredCountries.map((country, index) => (
-                <div key={`${country.name || "country"}-${index}`} 
-                className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+              {filteredCountries.map((country) => (
+                <div key={country.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg">{country.name}</h3>
@@ -229,7 +200,7 @@ export default function ManageCountriesPage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <MapIcon size={16} className="text-green-600" />
+                          <Map size={16} className="text-green-600" />
                           <span className="text-sm">
                             <strong>Capital:</strong> {country.capital || "N/A"}
                           </span>
@@ -381,7 +352,6 @@ export default function ManageCountriesPage() {
             </Card>
           </div>
         )}
-
       </div>
     </AdminLayout>
   )

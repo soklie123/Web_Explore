@@ -1,9 +1,14 @@
 const API_BASE_URL = "/api"
 
+interface APIResponse {
+  [region: string]: any[]
+}
+
 export const apiService = {
-  // Fetch all countries safely
   async getAllCountries(): Promise<any[]> {
     try {
+      console.log(" Fetching countries...")
+
       const response = await fetch(`${API_BASE_URL}/countries`, {
         cache: "no-store",
       })
@@ -12,62 +17,21 @@ export const apiService = {
         throw new Error(`API error: ${response.status}`)
       }
 
-      const data = await response.json()
+      const data: APIResponse = await response.json()
 
-      // If data is already an array, return it
-      if (Array.isArray(data)) {
-        return data
-      }
+      // Flatten regions → single array
+      const countries: any[] = []
+      Object.values(data).forEach((regionCountries) => {
+        if (Array.isArray(regionCountries)) {
+          countries.push(...regionCountries)
+        }
+      })
 
-      // If data is a single object, wrap it in an array
-      if (data && typeof data === "object") {
-        return [data]
-      }
-
-      // Unexpected response, return empty array
-      console.warn("API returned unexpected data. Returning empty array:", data)
-      return []
-    } catch (error) {
-      console.error("Error fetching countries:", error)
+      console.log(` Successfully fetched ${countries.length} countries`)
+      return countries
+    } catch (error: any) {
+      console.error(" Failed to fetch countries:", error?.message || error)
       return []
     }
-  },
-
-  // Get single country by name
-  async getCountryByName(name: string): Promise<any | null> {
-    try {
-      const countries = await this.getAllCountries()
-      return (
-        countries.find(
-          (c) => c.name?.toLowerCase() === name.toLowerCase()
-        ) || null
-      )
-    } catch (error) {
-      console.error("Error fetching country:", error)
-      return null
-    }
-  },
-
-  // Helpers (unchanged)
-  getLawsByCountry(country: any): any[] {
-    if (!country?.laws) return []
-    return country.laws.flatMap((lawCategory: any) =>
-      (lawCategory.laws || []).map((law: any) => ({
-        ...law,
-        categoryGroup: lawCategory.category,
-      })),
-    )
-  },
-
-  getAttractionsByCountry(country: any): any[] {
-    return country?.attractions || []
-  },
-
-  getThingsToDoByCountry(country: any): any[] {
-    return country?.thingsToDo || []
-  },
-
-  getTipsByCountry(country: any): any[] {
-    return country?.tips || []
   },
 }
