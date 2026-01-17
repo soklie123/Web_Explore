@@ -1,49 +1,43 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { AdminLayout } from "@/components/admin-layout"
-import { AnalyticsCharts } from "@/components/analytics-charts"
-
-interface Country {
-  name: { common: string }
-  region?: string
-  population?: number
-  area?: number
-}
+import { useEffect, useState } from "react";
+import { AdminLayout } from "@/components/admin-layout";
+import { AnalyticsCharts } from "@/components/analytics-charts";
+import type { Country } from "@/lib/types";
 
 export default function AnalyticsDashboard() {
-  const [countries, setCountries] = useState<Country[]>([])
-  const [allCountries, setAllCountries] = useState<Country[]>([])
-  const [loading, setLoading] = useState(true)
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [allCountries, setAllCountries] = useState<Country[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const fieldsParam = "fields=name,region,population,area,flag,capital,languages,currencies"
-        const response = await fetch(`https://restcountries.com/v3.1/all?${fieldsParam}`, {
+        // Fetch from the local API instead of restcountries.com
+        const response = await fetch("/api/countries", {
           headers: {
             Accept: "application/json",
           },
-        })
-        const data = await response.json()
-        setCountries(data)
-        setAllCountries(data)
+        });
+        const data = await response.json();
+        setCountries(data);
+        setAllCountries(data);
       } catch (error) {
-        console.error("Error fetching countries:", error)
+        console.error("Error fetching countries:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCountries()
-  }, [])
+    fetchCountries();
+  }, []);
 
   if (loading) {
     return (
       <AdminLayout>
         <div>Loading analytics...</div>
       </AdminLayout>
-    )
+    );
   }
 
   return (
@@ -51,7 +45,9 @@ export default function AnalyticsDashboard() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Analytics</h1>
-          <p className="text-muted-foreground">View charts, region statistics, and country insights</p>
+          <p className="text-muted-foreground">
+            View charts, region statistics, and country insights
+          </p>
         </div>
 
         <AnalyticsCharts
@@ -63,5 +59,5 @@ export default function AnalyticsDashboard() {
         />
       </div>
     </AdminLayout>
-  )
+  );
 }
