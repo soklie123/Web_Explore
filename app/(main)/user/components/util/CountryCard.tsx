@@ -3,41 +3,24 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import FavoriteButton from "../function/FavoriteButton"
-
-
-type CountryCardProps = {
-  name: string
-  image: string
-  region: string
-  city: string
-  population: string
-  description: string
-  flag: string
-  slug?: string // make required
-}
+import { createSlugFromName } from "@/lib/country-utils"
+import { CountryCardData } from "@/lib/types"
 
 export default function CountryCard({
+  id,
   name,
-  image,
-  region,
-  city,
-  population,
-  description,
   flag,
-  slug,
-}: CountryCardProps) {
+  capital,
+  region,
+  overview
+}: CountryCardData) {
   const router = useRouter()
+  const slug = createSlugFromName(name)
 
   const handleClick = () => {
-  // Read current recently viewed from localStorage
-  const viewed: string[] = JSON.parse(localStorage.getItem("recentlyViewed") || "[]")
-
-    // Add this country to the front, remove duplicates
-  const updated = [slug!, ...viewed.filter(s => s !== slug!)].slice(0, 10) // Keep last 10
-
-  localStorage.setItem("recentlyViewed", JSON.stringify(updated))
-  const currentPath = window.location.pathname
-
+    const viewed: string[] = JSON.parse(localStorage.getItem("recentlyViewed") || "[]")
+    const updated = [slug, ...viewed.filter(s => s !== slug)].slice(0, 10)
+    localStorage.setItem("recentlyViewed", JSON.stringify(updated))
     router.push(`/user/${slug}/overview`)
   }
 
@@ -47,28 +30,25 @@ export default function CountryCard({
         onClick={handleClick}
         className="
           card w-full h-[420px] flex flex-col rounded-2xl overflow-hidden bg-white
-          shadow-md 
-          cursor-pointer
-          transition-all duration-300 ease-out
-          hover:-translate-y-2 hover:scale-[1.03]
-          hover:shadow-2xl
-          hover:ring-1 hover:ring-blue-200
-          active:scale-[0.98]
+          shadow-md cursor-pointer transition-all duration-300 ease-out
+          hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl
+          hover:ring-1 hover:ring-blue-200 active:scale-[0.98]
         "
       >
         {/* Image Section */}
         <div className="relative h-48 flex-shrink-0">
-          <Image src={image} alt={name} fill className="object-cover" priority />
+          <Image 
+            src={flag} 
+            alt={name} 
+            fill 
+            className="object-cover" 
+            priority 
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
 
-          {/* Flag */}
-          <div className="absolute top-4 left-4">
-            <span className={`fi fi-${flag} text-3xl`}></span>
-          </div>
+          <FavoriteButton slug={slug} />
 
-          {/* Heart Favorite */}
-          <FavoriteButton slug={slug!} />
-
-          {/* Region */}
+          {/* Region Badge */}
           <div className="absolute bottom-4 left-4 bg-white/90 !text-gray-700 backdrop-blur-sm
                           px-3 py-1.5 rounded-full flex items-center gap-2 text-sm">
             <span className="pi pi-map-marker"></span>
@@ -79,19 +59,16 @@ export default function CountryCard({
         {/* Content Section */}
         <div className="p-5 flex flex-col flex-grow">
           <h2 className="text-2xl font-bold mb-3 !text-gray-900">{name}</h2>
+          
           <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4 break-words">
-            {description}
+            {overview?.short_description || "Discover this amazing destination"}
           </p>
 
           {/* Stats Row */}
           <div className="flex items-center gap-6 mb-4 text-gray-600 text-sm flex-shrink-0">
             <div className="flex items-center gap-2">
               <span className="pi pi-building-columns"></span>
-              <span>{city}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="pi pi-users"></span>
-              <span>{population}</span>
+              <span>{capital}</span>
             </div>
           </div>
 

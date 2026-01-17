@@ -7,11 +7,13 @@ interface ComparisonData {
   label: string
   country1: string
   country2: string
-  value1?: number
-  value2?: number
 }
 
-export function CountryComparison({ countries }: { countries: Country[] }) {
+interface CountryComparisonProps {
+  countries: Country[]
+}
+
+export function CountryComparison({ countries }: CountryComparisonProps) {
   const [selectedCountries, setSelectedCountries] = useState<(Country | null)[]>([null, null])
 
   const countriesList = Array.isArray(countries) ? countries : []
@@ -22,65 +24,23 @@ export function CountryComparison({ countries }: { countries: Country[] }) {
     setSelectedCountries(newSelected)
   }
 
+  // Generate comparison data (only safe fields from your type)
   const comparisonData = useMemo<ComparisonData[] | null>(() => {
     if (!selectedCountries[0] || !selectedCountries[1]) return null
 
     const c1 = selectedCountries[0]
     const c2 = selectedCountries[1]
+
     return [
       {
-        label: "Population",
-        country1: ((c1?.population || 0) / 1e6).toFixed(1) + "M",
-        country2: ((c2?.population || 0) / 1e6).toFixed(1) + "M",
-        value1: c1?.population,
-        value2: c2?.population,
-      },
-      {
-        label: "Area (km²)",
-        country1: ((c1?.area || 0) / 1e6).toFixed(2) + "M",
-        country2: ((c2?.area || 0) / 1e6).toFixed(2) + "M",
-        value1: c1?.area,
-        value2: c2?.area,
-      },
-      {
-        label: "Population Density",
-        country1: c1?.area ? (((c1.population || 0) / c1.area) * 1000).toFixed(0) + "/km²" : "N/A",
-        country2: c2?.area ? (((c2.population || 0) / c2.area) * 1000).toFixed(0) + "/km²" : "N/A",
-        value1: c1?.area ? ((c1.population || 0) / c1.area) * 1000 : 0,
-        value2: c2?.area ? ((c2.population || 0) / c2.area) * 1000 : 0,
-      },
-      {
         label: "Capital",
-        country1: c1?.capital?.[0] || "N/A",
-        country2: c2?.capital?.[0] || "N/A",
+        country1: c1.capital || "N/A",
+        country2: c2.capital || "N/A",
       },
       {
-        label: "Region",
-        country1: c1?.region || "N/A",
-        country2: c2?.region || "N/A",
-      },
-      {
-        label: "Subregion",
-        country1: c1?.subregion || "N/A",
-        country2: c2?.subregion || "N/A",
-      },
-      {
-        label: "Languages",
-        country1: c1?.languages ? Object.values(c1.languages).join(", ") : "N/A",
-        country2: c2?.languages ? Object.values(c2.languages).join(", ") : "N/A",
-      },
-      {
-        label: "Currencies",
-        country1: c1?.currencies
-          ? Object.values(c1.currencies)
-              .map((c) => c.name)
-              .join(", ")
-          : "N/A",
-        country2: c2?.currencies
-          ? Object.values(c2.currencies)
-              .map((c) => c.name)
-              .join(", ")
-          : "N/A",
+        label: "Overview",
+        country1: c1.overview?.short_description || "N/A",
+        country2: c2.overview?.short_description || "N/A",
       },
     ]
   }, [selectedCountries])
@@ -92,31 +52,31 @@ export function CountryComparison({ countries }: { countries: Country[] }) {
         {[0, 1].map((index) => (
           <div key={index} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <h3 className="text-lg font-semibold text-slate-900 mb-4">
-              {selectedCountries[index] ? selectedCountries[index]?.name.common : "Select Country"}
+              {selectedCountries[index]?.name || "Select Country"}
             </h3>
 
-            {selectedCountries[index] && selectedCountries[index]?.flags?.svg && (
+            {selectedCountries[index]?.flag && (
               <img
-                src={selectedCountries[index]?.flags?.svg || "/placeholder.svg"}
-                alt={selectedCountries[index]?.name.common || "Country"}
+                src={selectedCountries[index].flag}
+                alt={selectedCountries[index].name}
                 className="w-full h-40 object-cover rounded-xl mb-4 border border-slate-100"
               />
             )}
 
             <select
-              value={selectedCountries[index]?.name.common || ""}
+              value={selectedCountries[index]?.name || ""}
               onChange={(e) => {
-                const country = countriesList.find((c) => c.name.common === e.target.value)
-                handleSelectCountry(index, country || null)
+                const country = countriesList.find((c) => c.name === e.target.value) || null
+                handleSelectCountry(index, country)
               }}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
               <option value="">Select a country...</option>
-              {[...countriesList]
-                .sort((a, b) => a.name.common.localeCompare(b.name.common))
+              {countriesList
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((country) => (
-                  <option key={country.name.common} value={country.name.common}>
-                    {country.name.common}
+                  <option key={country.id} value={country.name}>
+                    {country.name}
                   </option>
                 ))}
             </select>
@@ -134,7 +94,7 @@ export function CountryComparison({ countries }: { countries: Country[] }) {
       </div>
 
       {/* Comparison Table */}
-      {comparisonData && (
+      {comparisonData ? (
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-200">
@@ -143,10 +103,10 @@ export function CountryComparison({ countries }: { countries: Country[] }) {
                   Metric
                 </th>
                 <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
-                  {selectedCountries[0]?.name.common}
+                  {selectedCountries[0]?.name}
                 </th>
                 <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
-                  {selectedCountries[1]?.name.common}
+                  {selectedCountries[1]?.name}
                 </th>
               </tr>
             </thead>
@@ -154,43 +114,22 @@ export function CountryComparison({ countries }: { countries: Country[] }) {
               {comparisonData.map((row, index) => (
                 <tr key={index} className="hover:bg-slate-50/50 transition">
                   <td className="px-6 py-4 text-slate-600 font-medium">{row.label}</td>
-                  <td className="px-6 py-4 text-center text-slate-900">
-                    <span className="font-semibold">{row.country1}</span>
-                    {row.value1 !== undefined && row.value2 !== undefined && (
-                      <div className="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden w-24 mx-auto">
-                        <div
-                          className="bg-linear-to-r from-blue-500 to-cyan-500 h-full"
-                          style={{
-                            width: `${(row.value1 / Math.max(row.value1, row.value2)) * 100}%`,
-                          }}
-                        />
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-center text-slate-900">
-                    <span className="font-semibold">{row.country2}</span>
-                    {row.value1 !== undefined && row.value2 !== undefined && (
-                      <div className="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden w-24 mx-auto">
-                        <div
-                          className="bg-linear-to-r from-blue-500 to-cyan-500 h-full"
-                          style={{
-                            width: `${(row.value2 / Math.max(row.value1, row.value2)) * 100}%`,
-                          }}
-                        />
-                      </div>
-                    )}
-                  </td>
+                  <td className="px-6 py-4 text-center text-slate-900">{row.country1}</td>
+                  <td className="px-6 py-4 text-center text-slate-900">{row.country2}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      )}
-
-      {!selectedCountries[0] || !selectedCountries[1] ? (
+      ) : (
         <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center shadow-sm">
           <div className="mx-auto w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-6 h-6 text-blue-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -199,9 +138,11 @@ export function CountryComparison({ countries }: { countries: Country[] }) {
               />
             </svg>
           </div>
-          <p className="text-slate-500 font-medium">Select two countries above to start comparing their statistics</p>
+          <p className="text-slate-500 font-medium">
+            Select two countries above to start comparing their statistics
+          </p>
         </div>
-      ) : null}
+      )}
     </div>
   )
 }

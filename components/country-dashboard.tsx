@@ -61,8 +61,7 @@ export function CountriesTable({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="name">Name</SelectItem>
-            <SelectItem value="population">Population</SelectItem>
-            <SelectItem value="area">Area</SelectItem>
+            <SelectItem value="capital">Capital</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -73,35 +72,32 @@ export function CountriesTable({
           <thead className="bg-slate-800">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase">Country</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase">Region</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-slate-300 uppercase">Population</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-slate-300 uppercase">Area</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase">Capital</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase">Short Overview</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase">Flag</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700">
             {filteredCountries.map((country) => (
-              <tr key={country.cca3} className="hover:bg-slate-800">
-                <td className="px-4 py-3 text-slate-200">
-                  {country.name?.common}
+              <tr key={country.id} className="hover:bg-slate-800">
+                <td className="px-4 py-3 text-slate-200">{country.name}</td>
+                <td className="px-4 py-3 text-slate-400">{country.capital || "N/A"}</td>
+                <td className="px-4 py-3 text-slate-400">
+                  {country.overview?.short_description || "N/A"}
                 </td>
                 <td className="px-4 py-3 text-slate-400">
-                  {country.region}
-                </td>
-                <td className="px-4 py-3 text-right text-slate-400">
-                  {country.population?.toLocaleString()}
-                </td>
-                <td className="px-4 py-3 text-right text-slate-400">
-                  {country.area?.toLocaleString()}
+                  <img
+                    src={country.flag}
+                    alt={country.name}
+                    className="w-8 h-5 object-cover rounded"
+                  />
                 </td>
               </tr>
             ))}
 
             {filteredCountries.length === 0 && (
               <tr>
-                <td
-                  colSpan={4}
-                  className="px-4 py-6 text-center text-slate-400"
-                >
+                <td colSpan={4} className="px-4 py-6 text-center text-slate-400">
                   No countries found
                 </td>
               </tr>

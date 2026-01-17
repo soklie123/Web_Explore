@@ -87,37 +87,42 @@ export const useAuth = () => {
   };
 
   // ================= GOOGLE LOGIN =================
-  const loginWithGoogle = async () => {
-    setLoading(true);
-    setError("");
+const loginWithGoogle = async () => {
+  setLoading(true);
+  setError("");
 
-    try {
-      const result = await authService.loginWithGoogle();
-      const user = result.user;
+  try {
+    const result = await authService.loginWithGoogle();
+    const user = result.user;
 
-      const token = await user.getIdToken();
-      localStorage.setItem("authToken", token);
+    const token = await user.getIdToken();
+    localStorage.setItem("authToken", token);
 
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
 
-      const role = docSnap.exists() && docSnap.data()?.role 
-      ? (docSnap.data()?.role as string).trim() 
+    const role = docSnap.exists() && docSnap.data()?.role 
+      ? (docSnap.data()?.role as string).trim().toLowerCase()  // Added .toLowerCase()
       : "user";
-      localStorage.setItem("userRole", role); 
+    
+    localStorage.setItem("userRole", role); 
 
-      if (role === "admin") router.push("/admin/dashboard");
-      else router.push("/");
-
-      return { success: true, role };
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Google login failed";
-      setError(message);
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
+    if (role === "admin") {
+      router.push("/admin/dashboard");
+    } else {
+      router.push("/");
     }
-  };
+
+    return { success: true, role };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Google login failed";
+    console.error("Google login error:", err); // Add this for debugging
+    setError(message);
+    return { success: false, error: message };
+  } finally {
+    setLoading(false);
+  }
+};
 
   // ================= FORGOT PASSWORD =================
   const forgotPassword = async (email: string) => {

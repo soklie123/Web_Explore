@@ -1,29 +1,33 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { AdminLayout } from "@/components/admin-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { OverviewStats } from "@/components/overview-stats"
+'use client';
+import { useEffect, useState } from "react";
+import { AdminLayout } from "@/components/admin-layout";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { OverviewStats } from "@/components/overview-stats";
 
 export default function AdminDashboard() {
-  const [countries, setCountries] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const [countries, setCountries] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [featuredCount, setFeaturedCount] = useState(0); // <-- store featuredCountries length
 
   useEffect(() => {
+    // Fetch countries
     const fetchCountries = async () => {
       try {
-        const response = await fetch("https://restcountries.com/v3.1/all")
-        const data = await response.json()
-        setCountries(data)
+        const response = await fetch("https://restcountries.com/v3.1/all");
+        const data = await response.json();
+        setCountries(data);
       } catch (error) {
-        console.error("Error fetching countries:", error)
+        console.error("Error fetching countries:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
+    fetchCountries();
 
-    fetchCountries()
-  }, [])
+    // ================= FIX: localStorage access only in useEffect =================
+    const storedFeatured = JSON.parse(localStorage.getItem("featuredCountries") || "[]");
+    setFeaturedCount(storedFeatured.length);
+  }, []);
 
   return (
     <AdminLayout>
@@ -59,14 +63,12 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-black text-blue-600">
-                {JSON.parse(localStorage.getItem("featuredCountries") || "[]").length}
+                {featuredCount} {/* <-- use state instead of direct localStorage */}
               </div>
             </CardContent>
           </Card>
-
-          {/* Additional card for user analytics can be added here if needed */}
         </div>
       </div>
     </AdminLayout>
-  )
+  );
 }

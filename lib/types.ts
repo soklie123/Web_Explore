@@ -1,61 +1,108 @@
-export interface Country {
-  name: {
-    common: string
-    official?: string
-  }
-  region?: string
-  population?: number
-  area?: number
-  flags?: {
-    svg?: string
-    png?: string
-  }
-  capital?: string[]
-  subregion?: string
-  timezones?: string[]
-  languages?: Record<string, string>
-  currencies?: Record<string, { name: string }>
-  [key: string]: any
-}
+// lib/types.ts
 
-export interface CountryData {
-  name: {
-    common: string
-    official?: string
-  }
-  flag?: string
-  capital?: string
-  region?: string
-  population?: number
-  area?: number
-  languages?: Record<string, string>
-  currencies?: Record<string, { name: string; symbol: string }>
-  timezones?: string[]
-  [key: string]: any
+// ============= API Response Types =============
+export interface CountryOverview {
+  id: string
+  country_id: string
+  short_description: string
+  history: string
+  culture: string
+  climate: string
+  best_time_to_visit: string
+  currency: string
+  language: string
+  time_zone: string
+  latitude: number
+  longitude: number
+  google_map_url: string
+  created_at: string
+  updated_at: string
 }
 
 export interface Law {
   id: string
-  countryName: string
+  country_id: string
   title: string
-  description: string
-  createdAt: string
+  summary: string
+  category: string
+  status: string
+  penalty: string
+  created_at: string
+  updated_at: string
+}
+
+export interface LawCategory {
+  category: string
+  laws: Law[]
 }
 
 export interface Attraction {
   id: string
-  countryName: string
+  country_id: string
   name: string
+  category: string
   description: string
-  image?: string
-  createdAt: string
+  location: string
+  opening_hours: string
+  best_time_to_visit: string
+  estimated_visit_time: string
+  access_type: string
+  highlights: string[]
+  rules: string[]
+  images: string[]
+  created_at: string
+  updated_at: string
 }
 
-export interface Tip {
+export interface ThingToDo {
   id: string
-  countryName: string
+  country_id: string
   title: string
   description: string
-  category: "Laws" | "Attractions" | "Things To Do" | "Tips"
-  createdAt: string
+  category: string
+  location: string
+  duration: string
+  cost_level: 'Low' | 'Medium' | 'High'
+  created_at: string
+  updated_at: string
+}
+
+export interface TipItem {
+  id: string
+  short: string
+  detail: string
+  level: 'low' | 'medium' | 'high'
+}
+
+export interface TipCategory {
+  category: string
+  items: TipItem[]
+}
+
+export interface Country {
+  id: string
+  name: string
+  flag: string // URL to flag image
+  capital: string
+  overview?: CountryOverview
+  laws: LawCategory[]
+  attractions: Attraction[]
+  thingsToDo: ThingToDo[]
+  tips: TipCategory[]
+}
+
+export interface APIResponse {
+  [region: string]: Country[]
+}
+
+// ============= UI Component Types =============
+export interface CountryCardData {
+  id: string
+  name: string
+  flag: string
+  capital: string
+  region: string
+  overview?: {
+    short_description?: string
+  }
 }

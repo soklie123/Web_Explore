@@ -1,23 +1,54 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import CountryList, { Country } from "../user/components/list/CountryList"
-import { countries as allCountries } from "../user/components/list/DataCard"
+import CountryList from "../user/components/list/CountryList"
 import FilterDropdowns from "./fav/FilterDropdowns"
 import Link from 'next/link'
+import { CountryCardData } from "@/lib/types"
+import { getAllCountriesWithRegion, createSlugFromName } from "@/lib/country-utils"
+import { Loader2 } from 'lucide-react'
 
 export default function Favorite() {
-  const [favoriteCountries, setFavoriteCountries] = useState<Country[]>([])
+  const [allCountries, setAllCountries] = useState<CountryCardData[]>([])
+  const [favoriteCountries, setFavoriteCountries] = useState<CountryCardData[]>([])
   const [selectedRegion, setSelectedRegion] = useState<string>('')
   const [selectedCountry, setSelectedCountry] = useState<string>('')
+  const [loading, setLoading] = useState(true)
 
-  // Load favorites from localStorage
+  // Fetch all countries from API
   useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('/api/countries')
+        const data = await response.json()
+        
+        const countriesWithRegion = getAllCountriesWithRegion(data)
+        setAllCountries(countriesWithRegion)
+      } catch (err) {
+        console.error('Error fetching countries:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCountries()
+  }, [])
+
+  // Load favorites from localStorage when countries are loaded
+  useEffect(() => {
+    if (allCountries.length === 0) return
+
     const timer = setTimeout(() => {
       const favSlugs: string[] = JSON.parse(localStorage.getItem("favorites") || "[]")
-      const filtered = allCountries.filter((country: Country) => favSlugs.includes(country.slug))
+      
+      // Find countries that match the favorite slugs
+      const filtered = allCountries.filter((country) => 
+        favSlugs.includes(createSlugFromName(country.name))
+      )
+      
       setFavoriteCountries(filtered)
 
+      // Handle hash navigation
       const hash = window.location.hash
       if (hash) {
         const el = document.getElementById(hash.substring(1))
@@ -26,7 +57,7 @@ export default function Favorite() {
     }, 0)
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [allCountries])
 
   // Get unique regions from favorite countries with counts
   const regionStats = useMemo(() => {
@@ -78,6 +109,18 @@ export default function Favorite() {
       setSelectedRegion('')
       setSelectedCountry('')
     }
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading favorites...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

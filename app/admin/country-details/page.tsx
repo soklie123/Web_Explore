@@ -90,7 +90,7 @@ interface FormState {
 }
 
 /* =======================
-   ✅ COMPONENT
+    COMPONENT
 ======================= */
 
 export default function ManageTravelInfoPage() {
@@ -128,7 +128,7 @@ export default function ManageTravelInfoPage() {
   const filteredCountries: Country[] = countries.filter((c) => c.name?.toLowerCase().includes(""))
 
   /* =======================
-     ✅ CRUD Handlers
+      CRUD Handlers
   ======================= */
 
   const handleAddItem = () => {
@@ -268,7 +268,7 @@ export default function ManageTravelInfoPage() {
   }
 
   /* =======================
-     ✅ Derive tab data locally (no apiService.getXByCountry)
+      Derive tab data locally (no apiService.getXByCountry)
   ======================= */
 
   const laws: LawItem[] =
